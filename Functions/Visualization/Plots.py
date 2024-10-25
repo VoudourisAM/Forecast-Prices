@@ -550,7 +550,7 @@ def Recursive_Forecast_Plot_Split(dataframe, model):
 
         ax4.plot(residuals_index_train[0:length_of_dataframe], Residuals_data_train.Residuals_Train[0:length_of_dataframe], color=pal_blue[4])
         ax4.plot(forecast_index, Residuals_data_test.Residuals_Test.values, color=pal_red[3])
-        ax4.legend(['Residualls - Train','Residuals - Test'], loc="upper right", fontsize=15) #Label - Size of plot
+        ax4.legend(['Residuals - Train','Residuals - Test'], loc="upper right", fontsize=15) #Label - Size of plot
 
         ax4.tick_params(axis='x', labelrotation=30, labelsize=15, width=10, length=3, direction="in", colors='White') #Rotation label x and y
         ax4.tick_params(axis='y', labelsize=0) #White
