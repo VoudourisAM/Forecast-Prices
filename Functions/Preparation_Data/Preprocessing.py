@@ -19,34 +19,39 @@ import pandas as pd
 # ### End Import Libraries
 # ---
 
-# In[3]:
+# In[1]:
 
 
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
 def Correlation(dataframe, column_target, number):
     '''
-    This function RETURN a correlation between TARGET Column
+    This function RETURN a correlation dataframe between TARGET Column
     ------------------------------
     Parameter(dataframe): DataFrame
     Parameter(column_target): Dataframe with TARGET COLUMN (String type)
-    Parameter(number): 0.0 - 1.0 Int number
+    Parameter(number): -0.1 and 1.0 Float Number
     ------------------------------
     '''
     
-    print('--- Start Correlation()\n.\n.')
-    
-    new_dataframe = dataframe.copy()
     correlation = []
+    Target_Correlation = pd.DataFrame(data=dataframe.corr()[column_target]).copy()
+
+    try:
+        print('--- Start Correlation()\n.\n.')
+        
+        for _ in range(len(Target_Correlation)):
+            #print(_, ': ', Target_Correlation.index[_], ' --- ', Target_Correlation.iloc[_,0])
+            if (Target_Correlation.iloc[_,0] <= -number) or (Target_Correlation.iloc[_,0] >= number):
+                #print(_, ': ', Target_Correlation.index[_], ' --- ', Target_Correlation.iloc[_,0])
+                correlation.append(Target_Correlation.index[_])
+        
+        print('Correlation between: ', '(', -number, ' - ', number, ')\nLength of Dataframe is: ', len(correlation))
+        print('--- End Correlation()')
+        #return correlation
+        return dataframe[correlation]
     
-    if number >=0.0 or number <=1.0:
-        for _ in range(len(new_dataframe.corr()[column_target])):
-            if (new_dataframe.corr()[column_target][new_dataframe.corr()[column_target].index[_]] <= -number) or (new_dataframe.corr()[column_target][new_dataframe.corr()[column_target].index[_]] >= number):
-                print(_, ' : ', new_dataframe.corr()[column_target].index[_], ' --- ', new_dataframe.corr()[column_target][new_dataframe.corr()[column_target].index[_]])
-                correlation.append([new_dataframe.corr()[column_target].index[_]])
-                
-    print('Correlation between: ', '(', -number, ' - ', number, ')\nLength of Dataframe is: ', len(correlation))
-    print('--- End Correlation()')
-    return correlation
+    except:
+        print('No option!\nError')
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
 
 
@@ -90,9 +95,9 @@ def Drop_Big_NullSum_Columns(dataframe):
     new_dataframe = dataframe.copy()
     
     null_value = new_dataframe.isnull().sum()
-    percent = int((40/100) * len(new_dataframe))
+    percent = int((12/100) * len(new_dataframe))
 
-    print('--- Start Drop_Big_NullSum_Columns()\n.\n Drop 40% null columns \n.')
+    print('--- Start Drop_Big_NullSum_Columns()\n.\n Drop > 12% null columns length of dataframe\n.')
     
     for _ in new_dataframe.columns:
         try:

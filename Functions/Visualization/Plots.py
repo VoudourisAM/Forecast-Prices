@@ -7,11 +7,11 @@
 # 
 # ---
 
-# In[1]:
+# In[4]:
 
 
 import pandas as pd 
-
+import numpy as np
 import math
 
 import mplcyberpunk as mplcp
@@ -29,7 +29,60 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error  
 
 
-# In[2]:
+# In[3]:
+
+
+#-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
+def Plot_Of_Correlation(dataframe):
+    '''
+    This function visualize plot of Target Correlation  (Target is the first column)
+    ------------------------------
+    Parameter(dataframe): DataFrame
+    ------------------------------
+    '''
+    
+    plt.style.use("cyberpunk") #Background color
+
+    plt.figure(figsize=(12, 7), tight_layout=True)
+
+    heatmap = sns.heatmap(dataframe.corr()[[dataframe.corr().columns[0]]].sort_values(by=dataframe.corr().columns[0], ascending=False),
+                          vmin=-1, vmax=1, annot=True, fmt='.1g', square=False, cbar=False, cmap='coolwarm')
+    heatmap.set_title('Correlation of Target', fontdict={'fontsize':15}, color='Gold', pad=12);
+
+    plt.tick_params(axis='x', labelsize=12, colors='White')
+    plt.tick_params(axis='y', labelrotation=7, labelsize=12, colors='White')
+
+    plt.show()
+#-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
+
+
+
+#-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
+def Plot_Of_Matrix_Correlation(dataframe):
+    '''
+    This function visualize plot of Target Correlation  (Target is the first column)
+    ------------------------------
+    Parameter(dataframe): DataFrame
+    ------------------------------
+    '''
+        
+    matrix = np.tril(dataframe.corr())
+
+    plt.figure(figsize=(16, 8), tight_layout=True)
+
+    heatmap = sns.heatmap(dataframe.corr(),
+                          vmin=-1, vmax=1, annot=True,  fmt='.1g', square=False, cbar=False,
+                          mask=matrix,
+                          cmap='coolwarm')
+    heatmap.set_title('Correlation of Target', fontdict={'fontsize':15}, color='Gold', pad=12)  
+
+    plt.tick_params(axis='x', labelsize=0)
+    plt.tick_params(axis='y', labelrotation=7, labelsize=12, width=3, length=7,  direction='in', colors='White')
+    plt.grid(zorder=3, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
+
+    plt.show()
+#-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
+
 
 
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
@@ -695,7 +748,239 @@ def Plot_Of_Missing_Data(dataframe):
 
 
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
+def Recursive_Forecast_Train_Test_Plot_Split(dataframe, model):
+    '''
+    This function visualize 3 plots with Recursive Forecast method
+    1) Actual and Forecast Price
+    2) The Metric of Forecast (RMSE)
+    3) The Residuals of Forecast
+    ------------------------------
+    Parameter(dataframe): DataFrame
+    Parameter(model): A Model (With parameters or not)
+    ------------------------------
+    '''
+    
+    try:
+        prediction = [] #Create a list value
+    
+        X = dataframe.iloc[:, 1:]
+        y = dataframe.iloc[:, 0]
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False) #80% X_train - 20% X_test
+    
+        Xtrain = X_train.copy()
+        Xtest = X_test.copy()
+        ytrain = y_train.copy()
+        ytest = y_test.copy()
 
+        model.fit(Xtrain, ytrain) #Fit the model
+        model_train_predict = model.predict(Xtrain)
+        
+        #------------ Plot 1,4 ------------#
+        index = y_train.index.copy()
+        index = pd.to_datetime(index) #y_test index
+        
+        forecast_index = y_test.index.copy()
+        forecast_index = pd.to_datetime(forecast_index) #y_test index
+        #------------ Plot 1,4 ------------#
+
+        #------------ Drop the Xtest rows and Fit again the Xtrain ------------#
+        while len(Xtest) > 0:    
+            if len(Xtest) >= 30:
+            
+                model.fit(Xtrain, ytrain) #Fit the model
+                forecast = model.predict(Xtest.iloc[0:30]).tolist() #Predict the days
+                prediction = prediction + forecast #Insert the forecast values in prediction
+        
+                Xtrain = pd.concat([Xtrain, Xtest.iloc[0:30]]) #Insert values from second dataframe to first
+                ytrain = pd.concat([ytrain, ytest.iloc[0:30]]) #Insert values from second dataframe to first
+        
+                Xtest.drop(Xtest.index[range(30)], inplace=True) #Drop Rows
+                ytest.drop(ytest.index[range(30)], inplace=True) #Drop Rows
+
+            else:
+                forecast = model.predict(Xtest).tolist() #Predict the days
+                prediction = prediction + forecast #Insert the forecast values in prediction
+                break;
+    #------------ Drop the Xtest rows and Fit again the Xtrain ------------#
+    
+    #print('X_train: ', X_train.shape, '\nXtrain: ', Xtrain.shape, '\n\n',
+    #      'y_train: ', y_train.shape, '\nytrain: ', ytrain.shape)
+    #print()
+    #print('X_test: ', X_test.shape, '\nXtest: ', Xtest.shape, '\n\n',
+    #      'y_test: ', y_test.shape, '\nytest: ', ytest.shape)
+    #print()
+    #print('Prediction: ', len(prediction))
+    
+        plt.style.use("cyberpunk") #Background color
+        pal_red = sns.color_palette("flare") #Color
+        pal_blue = sns.color_palette("Blues") #Color
+    
+#------------------------------------------------------------------------------------------------------------------------------#
+        #------------ Plot 1 ------------#
+        fig, ax1 = plt.subplots(figsize=(15,5), tight_layout=True) #Size of plot dpi=300 for better quality
+
+        ax1.plot(index, y_train, ls='--', linewidth=1.5, label='Actual Price', color=pal_red[0])
+        ax1.plot(index, model_train_predict, linewidth=1, label='Model Train', color=pal_blue[1])
+
+        ax1.plot(forecast_index, y_test, ls='--', color=pal_red[0])
+        #ax1.plot(forecast_index, prediction, label='asdasdfdg', color=pal_blue[4])
+        
+        #plt.legend() #Label - Size of plot
+        plt.legend(['Actual Price','Model Train'], loc="upper right", fontsize=15) #Label - Size of plot
+        plt.ylabel('Model Train', fontsize=20, color='Gold') #Bottom title
+        plt.tick_params(axis='x', labelrotation=30, labelsize=15, width=10, length=3,  direction="in", colors='White') #Rotation label x and y
+        plt.tick_params(axis='y', labelrotation=30, labelsize=15, colors='White') #Rotation label x and y
+        plt.grid(zorder=1, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
+
+        mplcp.make_lines_glow()
+
+        ax1.spines['top'].set_visible(False)
+        ax1.spines['right'].set_visible(False)
+        ax1.spines['left'].set_color('White')
+        ax1.spines['left'].set_linewidth(0.3)
+        ax1.spines['bottom'].set_color('White')
+        ax1.spines['bottom'].set_linewidth(0.3)
+        plt.show()
+        #------------ Plot 1 ------------#
+#------------------------------------------------------------------------------------------------------------------------------#
+  
+#------------------------------------------------------------------------------------------------------------------------------#
+        #------------ Plot 2 ------------#
+        fig, ax2 = plt.subplots(figsize=(15,5), tight_layout=True) #Size of plot dpi=300 for better quality
+
+        ax2.plot(forecast_index, y_test, ls='--', label='Actual', color=pal_red[3])
+        ax2.plot(forecast_index, prediction, label='Forecast', color=pal_blue[4])
+
+        plt.ylabel('Forecast', fontsize=20, color='Gold') #Bottom title
+        #plt.legend() #Label - Size of plot
+        plt.legend(['Actual','Forecast'], loc="upper right", fontsize=15) #Label - Size of plot
+        plt.tick_params(axis='x', labelrotation=30, labelsize=15, width=10, length=3,  direction="in", colors='White') #Rotation label x and y
+        plt.tick_params(axis='y', labelrotation=30, labelsize=15, colors='White') #Rotation label x and y
+        plt.grid(zorder=1, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
+
+        mplcp.make_lines_glow()
+        
+        ax2.spines['top'].set_visible(False)
+        ax2.spines['right'].set_visible(False)
+        ax2.spines['left'].set_color('White')
+        ax2.spines['left'].set_linewidth(0.3)
+        ax2.spines['bottom'].set_color('White')
+        ax2.spines['bottom'].set_linewidth(0.3)
+        plt.show()
+        #------------ Plot 2 ------------#
+#------------------------------------------------------------------------------------------------------------------------------#
+
+#------------------------------------------------------------------------------------------------------------------------------#
+        #------------ Plot 2,3 ------------#
+        metric_train = model.predict(X=Xtrain).tolist()
+    
+        Train_MSE = mean_squared_error(ytrain, metric_train)
+        Train_RMSE = math.sqrt(Train_MSE)
+        Train_RMSE = round(Train_RMSE,3)
+        
+        Test_MSE = mean_squared_error(y_test, prediction)
+        Test_RMSE = math.sqrt(Test_MSE)
+        Test_RMSE = round(Test_RMSE,3)
+
+        Metric_data = pd.DataFrame(data={'Train' : [Train_RMSE],
+                                         'Test' : [Test_RMSE]})
+        #Metric_data.astype(float)
+    
+        fig = gridspec.GridSpec(3, 2)
+        pl.figure(figsize=(15, 15), tight_layout=True)
+
+        ax2 = pl.subplot(fig[0, 0])
+        plt.ylabel('Root Mean Square Error', fontsize=20, color='Gold') #Bottom title
+    
+        bar1 = ax2.bar(Metric_data.columns[0], Metric_data['Train'], width=0.3, linewidth=3, alpha=0.8, bottom=0, edgecolor=pal_blue[3], color=pal_blue[4])
+        bar2 = ax2.bar(Metric_data.columns[1], Metric_data['Test'], width=0.3, linewidth=3, alpha=0.8, bottom=0, edgecolor=pal_red[2], color=pal_red[3])
+    
+        ax2.tick_params(axis='x', width=7, length=12, labelrotation=30, labelsize=15, bottom=True, direction="in", colors='White') #White
+        ax2.tick_params(axis='y', labelsize=0) #White
+        #ax2.tick_params(axis='y', labelsize=0) #Rotation label x and y
+        #ax2.tick_params(axis='y', labelrotation=30, labelsize=15, left=False, colors='White') #White
+        ax2.tick_params(axis='x', width=7, length=12, labelrotation=30, labelsize=15, bottom=True, direction="in", left=False, colors='White') #White
+        ax2.grid(axis='y', zorder=1, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
+
+        ax2.text(x=Metric_data.Train.name, y=Metric_data.Train.sum()/2, s=Metric_data.Train[0], color='White', weight='extra bold', ha='center', fontsize=15) #Text of labels
+        ax2.text(x=Metric_data.Test.name, y=Metric_data.Test.sum()/2, s=Metric_data.Test[0], color='White', weight='extra bold', ha='center', fontsize=15) #Text of labels
+
+        mplcp.add_bar_gradient(bars=bar1)
+        mplcp.add_bar_gradient(bars=bar2)
+    
+        ax2.spines['top'].set_visible(False)
+        ax2.spines['right'].set_visible(False)
+        ax2.spines['left'].set_visible(False)
+        ax2.spines['bottom'].set_color('White')
+        ax2.spines['bottom'].set_linewidth(0.3)
+
+
+
+        ax3 = pl.subplot(fig[0, 1])
+        
+        ax3.barh(Metric_data.columns[0], Metric_data['Train']+0.1, height=0.4, linewidth=3, alpha=0.3, left=0, color=pal_blue[4])
+        ax3.barh(Metric_data.columns[1], Metric_data['Test']+0.1, height=0.4, linewidth=3, alpha=0.3, left=0, color=pal_red[3])
+    
+        ax3.barh(Metric_data.columns[0], Metric_data['Train'], height=0.3, linewidth=3, alpha=0.8, left=0, edgecolor=pal_blue[3], color=pal_blue[4])
+        ax3.barh(Metric_data.columns[1], Metric_data['Test'], height=0.3, linewidth=3, alpha=0.8, left=0, edgecolor=pal_red[2], color=pal_red[3])
+    
+        ax3.legend(['RMSE - Train','RMSE - Test'], loc="upper right", fontsize=15) #Label - Size of plot
+        ax3.tick_params(axis='y', width=7, length=12, labelrotation=30, labelsize=15, left=True, bottom=False, direction="in", colors='White')
+        ax3.tick_params(axis='x', labelsize=0) #Rotation label x and y
+        ax3.grid(axis='x', zorder=1, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
+        #ax3.tick_params(axis='x', labelrotation=30, labelsize=15, bottom=False, colors='White')
+
+        ax3.text(x=Metric_data.Train.sum()/2, y=Metric_data.Train.name, s=Metric_data.Train[0], color='White', weight='extra bold', va='center', fontsize=15) #Text of labels
+        ax3.text(x=Metric_data.Test.sum()/2, y=Metric_data.Test.name, s=Metric_data.Test[0], color='White', weight='extra bold', va='center', fontsize=15) #Text of labels
+    
+        ax3.spines['top'].set_visible(False)
+        ax3.spines['right'].set_visible(False)
+        ax3.spines['bottom'].set_visible(False)
+        ax3.spines['left'].set_color('White')
+        ax3.spines['left'].set_linewidth(0.3)
+        plt.show()
+        #------------ Plot 2,3 ------------#
+#------------------------------------------------------------------------------------------------------------------------------#
+
+#------------------------------------------------------------------------------------------------------------------------------#
+    
+        length_of_dataframe = int(len(dataframe) * 0.79)
+
+        #------------ Plot 4 ------------#
+        Residuals_Train = ytrain - metric_train
+        Residuals_Test = y_test - prediction
+    
+        Residuals_data_train = pd.DataFrame(data={'Residuals_Train' : Residuals_Train})
+        Residuals_data_test = pd.DataFrame(data={'Residuals_Test' : Residuals_Test})
+
+        residuals_index_train = Residuals_data_train.index.copy()
+        residuals_index_train = pd.to_datetime(residuals_index_train) #Residuals intex train
+    
+        fig, ax4 = plt.subplots(figsize=(15,5), tight_layout=True) #Size of plot dpi=300 for better quality
+
+        ax4.plot(residuals_index_train[0:length_of_dataframe], Residuals_data_train.Residuals_Train[0:length_of_dataframe], color=pal_blue[4])
+        ax4.plot(forecast_index, Residuals_data_test.Residuals_Test.values, color=pal_red[3])
+        
+        ax4.legend(['Residuals - Train','Residuals - Test'], loc="upper right", fontsize=15) #Label - Size of plot
+        ax4.tick_params(axis='x', labelrotation=30, labelsize=15, width=10, length=3, direction="in", colors='White') #Rotation label x and y
+        #ax4.tick_params(axis='y', labelsize=0) #White
+        ax4.tick_params(axis='y', labelrotation=30, labelsize=15, colors='White') #Rotation label x and y
+        ax4.grid(zorder=1, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
+    
+        mplcp.make_lines_glow()
+
+        ax4.spines['top'].set_visible(False)
+        ax4.spines['right'].set_visible(False)
+        ax4.spines['left'].set_color('White')
+        ax4.spines['left'].set_linewidth(0.3)
+        ax4.spines['bottom'].set_color('White')
+        ax4.spines['bottom'].set_linewidth(0.3)
+        plt.show()
+        #------------ Plot 4 ------------#
+#------------------------------------------------------------------------------------------------------------------------------#
+
+    except:
+        print('No option!\nError')
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
 
 
