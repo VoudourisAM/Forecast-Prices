@@ -29,7 +29,7 @@
 - Animated dataframe with train test split
   ![Screenshot 2024-11-12 194801](https://github.com/user-attachments/assets/73283d06-4e4c-459a-a989-610a1a9412bf)
   
-- Recursive forecast of dataframe (Train 80% and +30) (2 Plots)
+- Recursive forecast of dataframe (Train 80% and +30) (cost function is RMSE and Residuals plot)
   ![Screenshot 2024-11-12 194720](https://github.com/user-attachments/assets/f0977c6d-5759-41af-9703-cf8db25d715c)
   ![Screenshot 2024-11-12 194728](https://github.com/user-attachments/assets/72af60ed-009f-407c-a887-e33a94bdcfb7)
   ![Screenshot 2024-11-12 194738](https://github.com/user-attachments/assets/e324e307-6caa-45f7-80ea-315cb5ac4ca3)
