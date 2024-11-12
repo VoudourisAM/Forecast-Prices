@@ -4,7 +4,7 @@
 -  Get all symbols for cryptocurrency
 -  Extract cryptocurrency data from Binance per 1-day (From 01/01/2020 - Until 31/12/2023)
 
-> #
+#
 
 > ### Preperation Data 
 - Select a Target from cryptocurrency
@@ -14,7 +14,7 @@
 - Keep specific data (most famous)
 - Return a correlation dataframe of Target
 
-> #
+#
  
 > ### Visualization
 - Plot of missing columns of dataframe
@@ -23,7 +23,7 @@
 - Animated dataframe with train test split
 - Recursive forecast of dataframe (Train 80% and +30) (2 Plots)
 
-> #
+#
 
 > ### Forecast 
 - Linear Regression
