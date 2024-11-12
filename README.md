@@ -1,4 +1,4 @@
-# Extract, Visualize and Forecast Data
+# Forecast Data
 
 > ### Extract Data
 -  Get all symbols for cryptocurrency
