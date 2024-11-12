@@ -26,4 +26,4 @@
 #
 
 > ### Forecast 
-- Linear Regression
+- Linear Regression Model (Regression)
