@@ -29,7 +29,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error  
 
 
-# In[3]:
+# In[4]:
 
 
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
@@ -95,6 +95,7 @@ def Plot_Of_Line(dataframe, column_name):
     ------------------------------
     '''
     
+    pal_dark = sns.color_palette("Greys")
     data = dataframe.copy()
     data.index = pd.to_datetime(data.index)
     
@@ -102,8 +103,8 @@ def Plot_Of_Line(dataframe, column_name):
     
     fig = plt.figure(figsize=(15,5), tight_layout=True) #Size of plot dpi=300 for better quality
     
-    outline=mpe.withStroke(linewidth=0.1, alpha=0.25, foreground='Gold')
-    plt.plot(data.index, data[column_name].values,  path_effects=[outline], alpha=0.8, color='Cyan') #Line of plot
+    outline=mpe.withStroke(linewidth=0.3, alpha=0.7, foreground='Gold')
+    plt.plot(data.index, data[column_name].values,  path_effects=[outline], alpha=1, color=pal_dark[3]) #Line of plot
     
     plt.legend([column_name], loc="upper right", fontsize=15) #Label - Size of plot
     
@@ -123,7 +124,7 @@ def Plot_Of_Line(dataframe, column_name):
     mplcp.add_gradient_fill(alpha_gradientglow=0.7) #Glow - Effect lines
     mplcp.make_lines_glow(alpha_line=0.5, n_glow_lines=10,  diff_linewidth=1.05) #Glow - Effect lines
     
-    plt.show() #Figure show    
+    plt.show() #Figure show   def Plot_Of_Line(dataframe, column_name):
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
 
 
@@ -236,8 +237,9 @@ def Plot_Train_Test_Split(dataframe):
         ax1.spines['right'].set_visible(False)   
   
         for _ in range(i + 1):
+            #ax2.plot(y.index[0:table_data.length_y_train[_]], y.values[0:table_data.length_y_train[_]], linewidth=1.5, color=pal_blue[4])
             ax2.plot(y.index[0:table_data.length_y_train[_]], y.values[0:table_data.length_y_train[_]], linewidth=1.5, color=pal_blue[len(table_data)-2])
-            ax2.plot(y.index[table_data.length_y_train[_]:table_data.length_y_train[_] + table_data.length_y_test[_]], y.values[table_data.length_y_train[_]:table_data.length_y_train[_] + table_data.length_y_test[_]], linewidth=1.2, color=pal_red[len(table_data)-3])
+            #ax2.plot(y.index[table_data.length_y_train[_]:table_data.length_y_train[_] + table_data.length_y_test[_]], y.values[table_data.length_y_train[_]:table_data.length_y_train[_] + table_data.length_y_test[_]], linewidth=1.2, color=pal_red[len(table_data)-3])
             #ax2.plot(y.index[table_data.length_y_train[_]:table_data.length_y_train[_] + table_data.length_y_test[_]], y.values[table_data.length_y_train[_]:table_data.length_y_train[_] + table_data.length_y_test[_]], linewidth=1.2, alpha=0, color=pal_red[len(table_data)-3])
 
         ax2.tick_params(axis='x', colors='White', direction="in", width=7, length=12, labelrotation=30, labelsize=15)
@@ -396,11 +398,15 @@ def Plot_Train_Test_Splits(dataframe):
                 div_train_data, div_test_data = div_numbers_of_data(length_table_data=len(table_data), table_data_column1=table_data.length_y_train, table_data_column2=table_data.length_y_test, index_of_table=_)
             
                 if c == 0:
-                    ax2.plot(y.index[0:div_train_data[c+1]], y.values[0:div_train_data[c+1]], linewidth=1.3, color=pal_blue[c])
-                    ax2.plot(y.index[div_train_data[-1]:div_train_data[-1] + div_test_data[c]], y.values[div_train_data[-1]:div_train_data[-1] + div_test_data[c]], linewidth=1.3, color=pal_red[c])
+                    ax2.plot(y.index[0:div_train_data[c+1]], y.values[0:div_train_data[c+1]], linewidth=1.3, color=pal_blue[4])
+                    ax2.plot(y.index[div_train_data[-1]:div_train_data[-1] + div_test_data[c]], y.values[div_train_data[-1]:div_train_data[-1] + div_test_data[c]], linewidth=0.3, color=pal_red[3])
+                    #ax2.plot(y.index[0:div_train_data[c+1]], y.values[0:div_train_data[c+1]], linewidth=1.3, color=pal_blue[c])
+                    #ax2.plot(y.index[div_train_data[-1]:div_train_data[-1] + div_test_data[c]], y.values[div_train_data[-1]:div_train_data[-1] + div_test_data[c]], linewidth=1.3, color=pal_red[c])
                 elif c < len(table_data)-1:
-                    ax2.plot(y.index[div_train_data[c]:div_train_data[c+1]], y.values[div_train_data[c]:div_train_data[c+1]], linewidth=1.3, color=pal_blue[c])
-                    ax2.plot(y.index[div_train_data[len(table_data)-1] + div_test_data[c]:div_train_data[len(table_data)-1] + div_test_data[c+1]], y.values[div_train_data[-1] + div_test_data[c]:div_train_data[-1] + div_test_data[c+1]], linewidth=1.3, color=pal_red[c])
+                    ax2.plot(y.index[div_train_data[c]:div_train_data[c+1]], y.values[div_train_data[c]:div_train_data[c+1]], linewidth=1.3, color=pal_blue[4])
+                    ax2.plot(y.index[div_train_data[len(table_data)-1] + div_test_data[c]:div_train_data[len(table_data)-1] + div_test_data[c+1]], y.values[div_train_data[-1] + div_test_data[c]:div_train_data[-1] + div_test_data[c+1]], linewidth=0.3, color=pal_red[3])
+                    #ax2.plot(y.index[div_train_data[c]:div_train_data[c+1]], y.values[div_train_data[c]:div_train_data[c+1]], linewidth=1.3, color=pal_blue[c])
+                    #ax2.plot(y.index[div_train_data[len(table_data)-1] + div_test_data[c]:div_train_data[len(table_data)-1] + div_test_data[c+1]], y.values[div_train_data[-1] + div_test_data[c]:div_train_data[-1] + div_test_data[c+1]], linewidth=1.3, color=pal_red[c])
             
         ax2.tick_params(axis='x', colors='White', direction="in", width=7, length=12, labelrotation=30, labelsize=15)
         ax2.tick_params(axis='y', width=0, length=0, labelsize=0)
@@ -411,7 +417,7 @@ def Plot_Train_Test_Splits(dataframe):
         ax2.spines['right'].set_visible(False)
         ax2.spines['left'].set_visible(False)
     
-    ani = FuncAnimation(fig=fig, func=animation_bar_line, frames=range(len(table_data)), interval=1000, repeat_delay=1500)
+    ani = FuncAnimation(fig=fig, func=animation_bar_line, frames=range(len(table_data)), interval=1500, repeat_delay=2500)
     ani.save(filename="../Forecast_Prices/Animation/plot_bars_lines.gif", writer="pillow")
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
 
@@ -606,7 +612,8 @@ def Recursive_Forecast_Plot_Split(dataframe, model):
         ax4.legend(['Residuals - Train','Residuals - Test'], loc="upper right", fontsize=15) #Label - Size of plot
 
         ax4.tick_params(axis='x', labelrotation=30, labelsize=15, width=10, length=3, direction="in", colors='White') #Rotation label x and y
-        ax4.tick_params(axis='y', labelsize=0) #White
+        #ax4.tick_params(axis='y', labelsize=0) #White
+        ax4.tick_params(axis='y', labelrotation=30, labelsize=15, colors='White') #Rotation label x and y
         #ax4.tick_params(axis='y', labelrotation=30, labelsize=15, colors='White') #Rotation label x and y
         ax4.grid(zorder=1, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
     
