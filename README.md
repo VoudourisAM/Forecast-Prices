@@ -31,8 +31,8 @@
   
 - Recursive forecast of dataframe (Train 80% and +30) (cost function is RMSE and Residuals plot)
 ![Screenshot 2024-11-12 194720](https://github.com/user-attachments/assets/8756b881-10be-4163-93e7-c0769d3fb923)
-  ![Screenshot 2024-11-12 194728](https://github.com/user-attachments/assets/72af60ed-009f-407c-a887-e33a94bdcfb7)
-  ![Screenshot 2024-11-12 194738](https://github.com/user-attachments/assets/e324e307-6caa-45f7-80ea-315cb5ac4ca3)
+![Screenshot 2024-11-12 194728](https://github.com/user-attachments/assets/de2fbd79-c116-4a09-bb33-3dca395473fa)
+![Screenshot 2024-11-12 194738](https://github.com/user-attachments/assets/b686d0be-8f0c-4eb6-b102-39545372898b)
   ![Screenshot 2024-11-12 194748](https://github.com/user-attachments/assets/675ea813-de34-47c1-aac1-689f089ad0da)
 
 #
