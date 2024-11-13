@@ -27,7 +27,6 @@
  ![Screenshot 2024-11-12 194705](https://github.com/user-attachments/assets/52ef1c38-8c3f-4bf6-8e2b-d66b78e023b1)
 
 - Animated dataframe with train test split
-  ![Screenshot 2024-11-12 194801](https://github.com/user-attachments/assets/73283d06-4e4c-459a-a989-610a1a9412bf)
   ![plot_bars_lines](https://github.com/user-attachments/assets/3a534bdc-86e2-41bc-9caa-a9e10315d9d2)
 
   
