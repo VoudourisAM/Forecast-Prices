@@ -2,7 +2,7 @@
 
 > ### Extract Data
 -  Get all symbols for cryptocurrency (from Binance) 
--  Extract cryptocurrency data per 1-day (From 01/01/2020 - Until 31/12/2023) (from Binance)
+-  Extract cryptocurrency data per 1-day from 01/01/2020 - until 31/12/2023 (from Binance)
 
 #
 
