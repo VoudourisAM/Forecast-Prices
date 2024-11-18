@@ -42,4 +42,8 @@
 - Linear Regression Model (Regression)
 
 > ### Random Grid Search - Grid Search for Hyperparameter Tuning
-- DecisionTreeRegressor Model (Regression)
+- DecisionTreeRegressor Model (Regression) consider which are the most important columns
+  ![Screenshot 2024-11-18 160433](https://github.com/user-attachments/assets/451137a6-d090-4776-ba12-bbbc8c0e0676)
+  ![Screenshot 2024-11-18 160355](https://github.com/user-attachments/assets/890e2bf3-fb61-4097-be74-60ec805a3e1c)
+  ![Screenshot 2024-11-16 105044](https://github.com/user-attachments/assets/8524add7-9753-4030-8650-a08340a5bf84)
+
