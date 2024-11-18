@@ -41,5 +41,5 @@
 > ## Forecast Model
 - Linear Regression Model (Regression)
 
-> ### Random Grid Search - Grid Search for Hyperparameters Tuning
+> ### Random Grid Search - Grid Search for Hyperparameter Tuning
 - DecisionTreeRegressor Model (Regression)
