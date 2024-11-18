@@ -29,7 +29,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error  
 
 
-# In[4]:
+# In[1]:
 
 
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
@@ -107,7 +107,6 @@ def Plot_Of_Line(dataframe, column_name):
     plt.plot(data.index, data[column_name].values,  path_effects=[outline], alpha=1, color=pal_dark[3]) #Line of plot
     
     plt.legend([column_name], loc="upper right", fontsize=15) #Label - Size of plot
-    
     plt.xlabel('Period', fontsize=20, color='Gold') #Left title
     plt.ylabel('Price ($)', fontsize=20, color='Gold') #Bottom title
     
@@ -471,15 +470,15 @@ def Recursive_Forecast_Plot_Split(dataframe, model):
                 forecast = model.predict(Xtest).tolist() #Predict the days
                 prediction = prediction + forecast #Insert the forecast values in prediction
                 break;
-    #------------ Drop the Xtest rows and Fit again the Xtrain ------------#
+        #------------ Drop the Xtest rows and Fit again the Xtrain ------------#
     
-    #print('X_train: ', X_train.shape, '\nXtrain: ', Xtrain.shape, '\n\n',
-    #      'y_train: ', y_train.shape, '\nytrain: ', ytrain.shape)
-    #print()
-    #print('X_test: ', X_test.shape, '\nXtest: ', Xtest.shape, '\n\n',
-    #      'y_test: ', y_test.shape, '\nytest: ', ytest.shape)
-    #print()
-    #print('Prediction: ', len(prediction))
+        #print('X_train: ', X_train.shape, '\nXtrain: ', Xtrain.shape, '\n\n',
+        #      'y_train: ', y_train.shape, '\nytrain: ', ytrain.shape)
+        #print()
+        #print('X_test: ', X_test.shape, '\nXtest: ', Xtest.shape, '\n\n',
+        #      'y_test: ', y_test.shape, '\nytest: ', ytest.shape)
+        #print()
+        #print('Prediction: ', len(prediction))
     
         plt.style.use("cyberpunk") #Background color
         pal_red = sns.color_palette("flare") #Color
@@ -541,7 +540,7 @@ def Recursive_Forecast_Plot_Split(dataframe, model):
         bar1 = ax2.bar(Metric_data.columns[0], Metric_data['Train'], width=0.3, linewidth=3, alpha=0.8, bottom=0, edgecolor=pal_blue[3], color=pal_blue[4])
         bar2 = ax2.bar(Metric_data.columns[1], Metric_data['Test'], width=0.3, linewidth=3, alpha=0.8, bottom=0, edgecolor=pal_red[2], color=pal_red[3])
     
-        ax2.tick_params(axis='x', width=7, length=12, labelrotation=30, labelsize=15, bottom=True, direction="in", colors='White') #White
+        #ax2.tick_params(axis='x', width=7, length=12, labelrotation=30, labelsize=15, bottom=True, direction="in", colors='White') #White
         ax2.tick_params(axis='y', labelsize=0) #White
         #ax2.tick_params(axis='y', labelsize=0) #Rotation label x and y
         #ax2.tick_params(axis='y', labelrotation=30, labelsize=15, left=False, colors='White') #White
@@ -988,6 +987,67 @@ def Recursive_Forecast_Train_Test_Plot_Split(dataframe, model):
 
     except:
         print('No option!\nError')
+#-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
+
+
+
+#-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
+def Characteristics_of_Model(model):
+    '''
+    This function visualize a importance model columns and average of this.
+    ------------------------------
+    Parameter(model): ML - Model
+    ------------------------------
+    '''
+
+    #--------------------------------------------------#
+    poss_coef = model.coef_[model.coef_ > 0]    
+    neg_coef = model.coef_[model.coef_ < 0]   
+    
+    poss_avg = np.average(poss_coef)
+    neg_avg = np.average(neg_coef)
+    #--------------------------------------------------#
+    
+    plt.style.use("cyberpunk") #Background color
+    pal_red = sns.color_palette("flare") #Color
+    pal_blue = sns.color_palette("Blues") #Color
+    
+    fig, ax = plt.subplots(figsize=(18,8), tight_layout=True) #Size of plot dpi=300 for better quality
+    
+    for _ in range(len(model.coef_)):
+        if (model.coef_[_] >= poss_avg) or (model.coef_[_] <= neg_avg):
+            if model.coef_[_] > 0:
+                bar1 = ax.bar(model.feature_names_in_[_], model.coef_[_], width=0.7, linewidth=3, alpha=0.8, bottom=0, edgecolor=pal_blue[3], color=pal_blue[4])
+            elif model.coef_[_] < 0:
+                bar1 = ax.bar(model.feature_names_in_[_], model.coef_[_], width=0.7, linewidth=3, alpha=0.8, bottom=0, edgecolor=pal_red[2], color=pal_red[3])
+            else:
+                bar1 = ax.bar(model.feature_names_in_[_], model.coef_[_], width=0.7, linewidth=3, alpha=0.8, bottom=0, color='White')
+        else:
+            bar1 = ax.bar(model.feature_names_in_[_], model.coef_[_], width=0.7, linewidth=3, alpha=0.8, bottom=0, edgecolor='Silver', color='Snow')
+
+    ax.hlines(y = poss_avg, xmin = len(model.coef_) * 0.12, xmax = model.feature_names_in_[-4], linestyles = 'dashed', color = 'White')
+    ax.text(model.feature_names_in_[0], poss_avg, 'Avg Importance Columns', ha ='left', va ='center') 
+    ax.text(model.feature_names_in_[-1], poss_avg, round(poss_avg,2), ha ='right', va ='center') 
+
+    ax.hlines(y = neg_avg, xmin = model.feature_names_in_[3], xmax = len(model.coef_) * 0.88, linestyles = 'dashed', color = 'White')
+    ax.text(model.feature_names_in_[-1], neg_avg, 'Avg Importance Columns', ha ='right', va ='center') 
+    ax.text(model.feature_names_in_[0], neg_avg, round(neg_avg,2), ha ='left', va ='center') 
+
+    plt.legend([model], loc="upper right", fontsize=15, labelcolor='Gold')
+    plt.xlabel('Columns Name', fontsize=20, color='Gold') #Left title
+    plt.ylabel('Importance Model Values', fontsize=20, color='Gold') #Bottom title
+    plt.tick_params(axis='y', labelrotation=30, labelsize=12, colors='White')
+    plt.tick_params(axis='x', width=3, length=7, labelrotation=30, labelsize=7, bottom=True, direction="in", left=False, colors='White') #White
+    
+    ax.spines['top'].set_visible(True)
+    ax.spines['top'].set_linewidth(0.7)
+    ax.spines['top'].set_color('Gold')
+    ax.spines['right'].set_visible(True)
+    ax.spines['right'].set_linewidth(0.7)
+    ax.spines['right'].set_color('Gold')
+    ax.spines['left'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)     
+    plt.show()
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
 
 
