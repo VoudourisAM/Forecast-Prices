@@ -38,5 +38,8 @@
 
 #
 
+> ## Random Grid Search - Grid Search for Hyperparameters Tuning
+
 > ### Forecast 
 - Linear Regression Model (Regression)
+- DecisionTreeRegressor (Regression)
