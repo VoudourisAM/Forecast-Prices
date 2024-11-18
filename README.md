@@ -42,4 +42,4 @@
 
 > ### Forecast 
 - Linear Regression Model (Regression)
-- DecisionTreeRegressor (Regression)
+- DecisionTreeRegressor Model (Regression)
