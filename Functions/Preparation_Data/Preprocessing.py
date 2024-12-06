@@ -71,6 +71,7 @@ def Select_Target(dataframe, column_name):
         new_dataframe = dataframe.copy()
         new_dataframe['Date'] = new_dataframe.index
         new_dataframe['Date'] = new_dataframe['Date'].shift(-1)
+        new_dataframe.index = new_dataframe['Date']
         new_dataframe.drop(['Date'], axis=1, inplace=True)
         new_dataframe.insert(0, 'Target_'+column_name, new_dataframe[column_name].shift(-1))
         new_dataframe.dropna(axis=0, inplace=True)
@@ -97,7 +98,7 @@ def Drop_Big_NullSum_Columns(dataframe):
     null_value = new_dataframe.isnull().sum()
     percent = int((12/100) * len(new_dataframe))
 
-    print('--- Start Drop_Big_NullSum_Columns()\n.\n Drop > 12% null columns length of dataframe\n.')
+    print('--- Start Drop_Big_NullSum_Columns()\n.\n Drop > 12% null columns from length of dataframe\n.')
     
     for _ in new_dataframe.columns:
         try:
@@ -156,24 +157,32 @@ def Drop_Holidays_Values(dataframe):
 
 
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
-def Drop_Missing_Data(dataframe):
+def Drop_Missing_Data(dataframe, axis_):
     '''
     This Function Return a dataframe with drop null columns
+    - axis_ = 0 Drop Rows
+    - axis_ = 1 Drop Columns
     ------------------------------
     Parameter(dataframe): DataFrame
+    Parameter(axis_): Drop columns or rows
     ------------------------------
     '''
     
     print('--- Start Drop_Missing_Data()\n.\n.')
     new_dataframe = dataframe.copy()
-
-    for _ in new_dataframe.columns:
-        if new_dataframe.isnull().sum()[_] > 7:
-            #print(_, ': ', dataframe[dataframe.index < '2021-01-01'].isnull().sum()[_])
-            new_dataframe.drop(columns=_, axis=1, inplace=True)
+    if axis_ == 1:
+        for _ in new_dataframe.columns:
+            if new_dataframe.isnull().sum()[_] > 7:
+                #print(_, ': ', dataframe[dataframe.index < '2021-01-01'].isnull().sum()[_])
+                new_dataframe.drop(columns=_, axis=axis_, inplace=True)
+    elif axis_ == 0:
+        new_dataframe.dropna(axis=axis_, inplace=True)
+    else:
+        print('No option!\nError')
     
     print('--- End  Drop_Missing_Data()\n')
     return new_dataframe
+    
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
 
 
@@ -243,6 +252,27 @@ def Keep_Specific_Columns(dataframe):
             continue;
     print('--- End Keep_Specific_Columns()')
     return new_dataframe
+#-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
+
+
+
+#-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
+def Train_Test_Sply(dataframe):
+    '''
+    This Function Return 4 Values with split of dataframe 
+    Train is 80% length of dataframe
+    Test is 20% length of dataframe
+    Target must be the first column
+    ------------------------------
+    Parameter(dataframe): DataFrame
+    ------------------------------
+    '''
+    
+    X = dataframe.iloc[:, 1:]
+    y = dataframe.iloc[:, 0]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)  # 80% X_train - 20% X_test
+    
+    return X_train, X_test, y_train, y_test
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
 
 
