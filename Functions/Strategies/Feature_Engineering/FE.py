@@ -35,7 +35,6 @@ class Feature_Engineering:
         Parameter(dataframe): DataFrame
         ------------------------------
         '''
-        
         self.data = dataframe
         
 #------------------------------------------------------------------------------------------------------------------------------#        
@@ -49,11 +48,9 @@ class Feature_Engineering:
         '''
         
         try:
-            new_dataframe = self.data.copy()
-
             for _ in range(len(column_name)):
-                new_dataframe[column_name[_]+'_Lg'] = np.log(new_dataframe[column_name[_]] / new_dataframe[column_name[_]].shift(1))
-            return new_dataframe
+                self.data[column_name[_]+'_Lg'] = np.log(self.data[column_name[_]] / self.data[column_name[_]].shift(1))
+            return self.data
         except:
             print('No option!\nError')
 #------------------------------------------------------------------------------------------------------------------------------#    
@@ -73,14 +70,12 @@ class Feature_Engineering:
         '''
         
         try:
-            new_dataframe = self.data.copy()
-        
             for _ in range(len(column_name)):
                 if (ma_number >=5 and ma_number <= 20):
-                    new_dataframe[column_name[_]+'_FMA_'+str(ma_number)] = new_dataframe[column_name[_]].rolling(window = ma_number).mean()
+                    self.data[column_name[_]+'_FMA_'+str(ma_number)] = self.data[column_name[_]].rolling(window = ma_number).mean()
                 elif (ma_number >=25 and ma_number <= 200):
-                    new_dataframe[column_name[_]+'_SMA_'+str(ma_number)] = new_dataframe[column_name[_]].rolling(window = ma_number).mean()
-            return new_dataframe
+                    self.data[column_name[_]+'_SMA_'+str(ma_number)] = self.data[column_name[_]].rolling(window = ma_number).mean()
+            return self.data
         except:
             print('No option!\nError')
 #------------------------------------------------------------------------------------------------------------------------------#
@@ -98,12 +93,12 @@ class Feature_Engineering:
         '''
         
         try:
-            new_dataframe = self.data.copy()
-        
             for _ in range(len(column_name)):
-                new_dataframe[column_name[_]+'_EMA_'+str(ema_number)] = new_dataframe[column_name[_]].ewm(span=ema_number, adjust=False).mean()
-                #df['EMA_30'] = df['Price'].ewm(span=30, adjust=False).mean()
-            return new_dataframe
+                if (ema_number >=5 and ema_number <= 20):
+                    self.data[column_name[_]+'_FEMA_'+str(ema_number)] = self.data[column_name[_]].ewm(span=ema_number, adjust=False).mean()
+                elif (ema_number >=25 and ema_number <= 200):
+                    self.data[column_name[_]+'_SEMA_'+str(ema_number)] = self.data[column_name[_]].ewm(span=ema_number, adjust=False).mean()
+            return self.data
         except:
             print('No option!\nError')
 #------------------------------------------------------------------------------------------------------------------------------#    
@@ -119,11 +114,9 @@ class Feature_Engineering:
         '''
         
         try:
-            new_dataframe = self.data.copy()
-        
             for _ in range(len(column_name)):
-                new_dataframe[column_name[_]+'_RSD_'+str(rsd_number)] = new_dataframe[column_name[_]].rolling(rsd_number).std()
-            return new_dataframe
+                self.data[column_name[_]+'_RSD_'+str(rsd_number)] = self.data[column_name[_]].rolling(rsd_number).std()
+            return self.data
         except:
             print('No option!\nError')
 #-------------------------------------------------- Momentum-Based Strategies -------------------------------------------------#    
@@ -145,27 +138,24 @@ class Feature_Engineering:
         Parameter(rsi_number): Number of Rolling Standar Index
         ------------------------------
         '''
-        try:
-            if rsi_number > 0:
-                new_dataframe = self.data.copy()
-            
-            if len(column_name) == 1:
+        try:         
+            if len(column_name) == 1 and (rsi_number > 0):
                 for _ in range(len(column_name)):
-                    delta = new_dataframe[column_name[_]].diff()
+                    delta = self.data[column_name[_]].diff()
                     gain = (delta.where(delta > 0, 0)).rolling(window=rsi_number).mean()
                     loss = (-delta.where(delta < 0, 0)).rolling(window=rsi_number).mean()
                     rs = gain / loss
-                    new_dataframe[column_name[_]+'_RSI_'+str(rsi_number)] = 100 - (100 / (1 + rs))
-            elif len(column_name) > 1:
+                    self.data[column_name[_]+'_RSI_'+str(rsi_number)] = 100 - (100 / (1 + rs))
+            elif len(column_name) > 1 and (rsi_number > 0):
                 for _ in range(len(column_name)):
-                    delta = new_dataframe[column_name[_]].diff()
+                    delta = self.data[column_name[_]].diff()
                     gain = (delta.where(delta > 0, 0)).rolling(window=rsi_number).mean()
                     loss = (-delta.where(delta < 0, 0)).rolling(window=rsi_number).mean()
                     rs = gain / loss
-                    new_dataframe[column_name[_]+'_RSI_'+str(rsi_number)] = 100 - (100 / (1 + rs))
+                    self.data[column_name[_]+'_RSI_'+str(rsi_number)] = 100 - (100 / (1 + rs))
             else:
                 print('No option!\nError')
-            return new_dataframe
+            return self.data
         except:
             print('No option!\nError')
 #-------------------------------------------------------------------------------------------------------------------------------
