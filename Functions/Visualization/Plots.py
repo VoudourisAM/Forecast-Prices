@@ -29,57 +29,38 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error  
 
 
-# In[1]:
+# In[2]:
 
 
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
-def Plot_Of_Correlation(dataframe):
+def Plot_Of_Matrix_Correlation(dataframe):
     '''
-    This function visualize plot of Target Correlation  (Target is the first column)
+    This function visualizes the plot of Target Correlation (Target is the first column)
     ------------------------------
     Parameter(dataframe): DataFrame
     ------------------------------
     '''
     
     plt.style.use("cyberpunk") #Background color
+    fig, ax = plt.subplots(1, 2, figsize=(18, 9), tight_layout=True)
 
-    plt.figure(figsize=(12, 7), tight_layout=True)
-
-    heatmap = sns.heatmap(dataframe.corr()[[dataframe.corr().columns[0]]].sort_values(by=dataframe.corr().columns[0], ascending=False),
-                          vmin=-1, vmax=1, annot=True, fmt='.1g', square=False, cbar=False, cmap='coolwarm')
-    heatmap.set_title('Correlation of Target', fontdict={'fontsize':15}, color='Gold', pad=12);
-
-    plt.tick_params(axis='x', labelsize=12, colors='White')
-    plt.tick_params(axis='y', labelrotation=7, labelsize=12, colors='White')
-
-    plt.show()
-#-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
-
-
-
-#-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
-def Plot_Of_Matrix_Correlation(dataframe):
-    '''
-    This function visualize plot of Target Correlation  (Target is the first column)
-    ------------------------------
-    Parameter(dataframe): DataFrame
-    ------------------------------
-    '''
-        
+    # Full correlation heatmap
     matrix = np.tril(dataframe.corr())
+    heatmap1 = sns.heatmap(dataframe.corr(),
+                           vmin=-1, vmax=1, annot=True, fmt='.1g', square=False, cbar=False,
+                           mask=matrix, ax=ax[0], cmap='coolwarm')
+    heatmap1.set_title('Correlation Heatmap', fontdict={'fontsize': 15}, color='Gold', pad=12)
+    ax[0].tick_params(axis='x', labelsize=0)
+    ax[0].tick_params(axis='y', labelrotation=7, labelsize=12, width=3, length=7, direction='in', colors='White')
+    ax[0].grid(zorder=3, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey')
 
-    plt.figure(figsize=(16, 8), tight_layout=True)
-
-    heatmap = sns.heatmap(dataframe.corr(),
-                          vmin=-1, vmax=1, annot=True,  fmt='.1g', square=False, cbar=False,
-                          mask=matrix,
-                          cmap='coolwarm')
-    heatmap.set_title('Correlation of Target', fontdict={'fontsize':15}, color='Gold', pad=12)  
-
-    plt.tick_params(axis='x', labelsize=0)
-    plt.tick_params(axis='y', labelrotation=7, labelsize=12, width=3, length=7,  direction='in', colors='White')
-    plt.grid(zorder=3, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
-
+    # Correlation with target column heatmap
+    target_corr = dataframe.corr()[[dataframe.columns[0]]].sort_values(by=dataframe.columns[0], ascending=False)
+    heatmap2 = sns.heatmap(target_corr,
+                           vmin=-1, vmax=1, annot=True, fmt='.1g', square=False, cbar=False, ax=ax[1], cmap='coolwarm')
+    heatmap2.set_title('Correlation with Target', fontdict={'fontsize': 15}, color='Gold', pad=12)
+    ax[1].tick_params(axis='x', labelsize=12, colors='White')
+    ax[1].tick_params(axis='y', labelsize=0, colors='White')
     plt.show()
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
 
@@ -121,7 +102,7 @@ def Plot_Of_Line(dataframe, column_name):
     #plt.text(x=data.index[-1], y=data[column_name][-1], s=column_name, fontsize=12) #Possitio of text
     
     mplcp.add_gradient_fill(alpha_gradientglow=0.7) #Glow - Effect lines
-    mplcp.make_lines_glow(alpha_line=0.5, n_glow_lines=10,  diff_linewidth=1.05) #Glow - Effect lines
+    #mplcp.make_lines_glow(alpha_line=0.5, n_glow_lines=10,  diff_linewidth=1.05) #Glow - Effect lines
     
     plt.show() #Figure show   def Plot_Of_Line(dataframe, column_name):
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
@@ -992,62 +973,7 @@ def Recursive_Forecast_Train_Test_Plot_Split(dataframe, model):
 
 
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
-def Characteristics_of_Model(model):
-    '''
-    This function visualize a importance model columns and average of this.
-    ------------------------------
-    Parameter(model): ML - Model
-    ------------------------------
-    '''
 
-    #--------------------------------------------------#
-    poss_coef = model.coef_[model.coef_ > 0]    
-    neg_coef = model.coef_[model.coef_ < 0]   
-    
-    poss_avg = np.average(poss_coef)
-    neg_avg = np.average(neg_coef)
-    #--------------------------------------------------#
-    
-    plt.style.use("cyberpunk") #Background color
-    pal_red = sns.color_palette("flare") #Color
-    pal_blue = sns.color_palette("Blues") #Color
-    
-    fig, ax = plt.subplots(figsize=(18,8), tight_layout=True) #Size of plot dpi=300 for better quality
-    
-    for _ in range(len(model.coef_)):
-        if (model.coef_[_] >= poss_avg) or (model.coef_[_] <= neg_avg):
-            if model.coef_[_] > 0:
-                bar1 = ax.bar(model.feature_names_in_[_], model.coef_[_], width=0.7, linewidth=3, alpha=0.8, bottom=0, edgecolor=pal_blue[3], color=pal_blue[4])
-            elif model.coef_[_] < 0:
-                bar1 = ax.bar(model.feature_names_in_[_], model.coef_[_], width=0.7, linewidth=3, alpha=0.8, bottom=0, edgecolor=pal_red[2], color=pal_red[3])
-            else:
-                bar1 = ax.bar(model.feature_names_in_[_], model.coef_[_], width=0.7, linewidth=3, alpha=0.8, bottom=0, color='White')
-        else:
-            bar1 = ax.bar(model.feature_names_in_[_], model.coef_[_], width=0.7, linewidth=3, alpha=0.8, bottom=0, edgecolor='Silver', color='Snow')
-
-    ax.hlines(y = poss_avg, xmin = len(model.coef_) * 0.12, xmax = model.feature_names_in_[-4], linestyles = 'dashed', color = 'White')
-    ax.text(model.feature_names_in_[0], poss_avg, 'Avg Importance Columns', ha ='left', va ='center') 
-    ax.text(model.feature_names_in_[-1], poss_avg, round(poss_avg,2), ha ='right', va ='center') 
-
-    ax.hlines(y = neg_avg, xmin = model.feature_names_in_[3], xmax = len(model.coef_) * 0.88, linestyles = 'dashed', color = 'White')
-    ax.text(model.feature_names_in_[-1], neg_avg, 'Avg Importance Columns', ha ='right', va ='center') 
-    ax.text(model.feature_names_in_[0], neg_avg, round(neg_avg,2), ha ='left', va ='center') 
-
-    plt.legend([model], loc="upper right", fontsize=15, labelcolor='Gold')
-    plt.xlabel('Columns Name', fontsize=20, color='Gold') #Left title
-    plt.ylabel('Importance Model Values', fontsize=20, color='Gold') #Bottom title
-    plt.tick_params(axis='y', labelrotation=30, labelsize=12, colors='White')
-    plt.tick_params(axis='x', width=3, length=7, labelrotation=30, labelsize=7, bottom=True, direction="in", left=False, colors='White') #White
-    
-    ax.spines['top'].set_visible(True)
-    ax.spines['top'].set_linewidth(0.7)
-    ax.spines['top'].set_color('Gold')
-    ax.spines['right'].set_visible(True)
-    ax.spines['right'].set_linewidth(0.7)
-    ax.spines['right'].set_color('Gold')
-    ax.spines['left'].set_visible(False)
-    ax.spines['bottom'].set_visible(False)     
-    plt.show()
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
 
 
