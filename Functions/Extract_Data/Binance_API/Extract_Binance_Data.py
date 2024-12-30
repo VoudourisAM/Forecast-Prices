@@ -18,11 +18,11 @@ import pandas as pd
 import datetime
 
 
-# In[2]:
+# In[4]:
 
 
 class Binance:
-    def Get_All_Coins_Info():
+    def Get_All_Coins_Info(self):
         '''
         This function RETURN list with Cryptocurrency Simbols of Binance
         '''
@@ -40,7 +40,7 @@ class Binance:
         #except:
         #    print('No option!\nError')
     
-    def Get_Historical_Data_1Day(list_of_data):
+    def Get_Historical_Data_1Day(self, list_of_data):
         '''
         This function RETURN dataframe with data 
         From: 1 Jan, 2020
@@ -60,15 +60,18 @@ class Binance:
         
         for i in range(len(list_of_data)):
             try:
-                klines = pd.DataFrame(client.get_historical_klines(list_of_data[i], Client.KLINE_INTERVAL_1DAY, start_str="1 Jan, 2020", end_str="31 Dec, 2023"), columns=columns)
-                klines['Open time'] = pd.to_datetime(klines['Open time'], unit='ms')
+                klines = pd.DataFrame(client.get_historical_klines(list_of_data[i], Client.KLINE_INTERVAL_1DAY, start_str="01/01/2020", end_str="31/12/2023"), columns=columns)
+                klines["Open time"] = pd.to_datetime(klines["Open time"], unit="ms")
+                klines.set_index("Open time", inplace=True)
+                klines = klines[["Open", "High", "Low", "Close"]]
+                #klines['Open time'] = pd.to_datetime(klines['Open time'], unit='ms')
                 #klines['Close time'] = pd.to_datetime(temp['Close time'], unit='ms')
-                klines.index = pd.to_datetime(klines['Open time'], unit='ms')
-                klines.drop(['Open time', 'Close time', 'Volume', 'Quote asset volume', 'Number of trades', 'TB Base Vol', 'TB Quot Vol', 'Ignore'], axis=1, inplace=True) #Delete columns
+                #klines.index = pd.to_datetime(klines['Open time'], unit='ms')
+                #klines.drop(['Open time', 'Close time', 'Volume', 'Quote asset volume', 'Number of trades', 'TB Base Vol', 'TB Quot Vol', 'Ignore'], axis=1, inplace=True) #Delete columns
 
                 for j in range(len(klines.columns)): #Rename the columns
                     klines.rename(columns={klines.columns[j] : list_of_data[i]+'_'+klines.columns[j]}, inplace=True) 
-                dataframe = dataframe.join(klines)
+                dataframe = dataframe.join(klines, how="left")
             except:
                 print('No option!\nError')
         
