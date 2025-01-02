@@ -18,27 +18,35 @@ import pandas as pd
 import datetime
 
 
-# In[4]:
+# In[5]:
 
 
 class Binance:
-    def Get_All_Coins_Info(self):
+    def Get_All_Coins_Info(self, countryCode): #Extract - Filter list Fiat of coin
         '''
         This function RETURN list with Cryptocurrency Simbols of Binance
+        ------------------------------
+        Parameter(countryCode): Fiat name (BUSD,EUR...)
+        ------------------------------
         '''
-        
-        list_all_symbol_of_crypto = []
-        
-        #try:
-        print('--- Start Extract Data\n.\n.\n.')
-        info_all_symbol_of_crypto = client.get_all_tickers()
-        info_all_symbol_of_crypto = pd.DataFrame(info_all_symbol_of_crypto) #DataFrame of information coins
-    
-        list_all_symbol_of_crypto = info_all_symbol_of_crypto.symbol.to_list()
-        print('--- End Extract Data')    
-        return list_all_symbol_of_crypto
-        #except:
-        #    print('No option!\nError')
+
+        try:
+            print('--- Start Extract Data\n.\n.\n.')
+
+            info_coins = []
+            exchange_info = client.get_exchange_info()
+            info_df = pd.DataFrame(exchange_info['symbols']) #DataFrame of information coins
+
+            for _ in range(len(info_df)):
+                #print(_,': ', info_df['quoteAsset'][_])
+                if info_df['quoteAsset'][_] == countryCode:
+                    #print(_, ': ', info_df['symbol'][_], ': ', info_df['quoteAsset'][_])
+                    info_coins.append(info_df['symbol'][_])
+            print('--- End Extract Data')    
+            return info_coins
+        except:
+            print('No option!\nError')
+
     
     def Get_Historical_Data_1Day(self, list_of_data):
         '''
@@ -50,7 +58,7 @@ class Binance:
         ------------------------------
         '''
         
-        dataframe = pd.date_range(start='01/01/2020' , end='31/12/2023', freq="1D").to_frame()
+        dataframe = pd.date_range(start='2020-01-01' , end='2023-12-31', freq="1D").to_frame()
         dataframe.index.name = 'Open time'
         dataframe.drop([0], axis=1, inplace=True)
         
@@ -60,7 +68,7 @@ class Binance:
         
         for i in range(len(list_of_data)):
             try:
-                klines = pd.DataFrame(client.get_historical_klines(list_of_data[i], Client.KLINE_INTERVAL_1DAY, start_str="01/01/2020", end_str="31/12/2023"), columns=columns)
+                klines = pd.DataFrame(client.get_historical_klines(list_of_data[i], Client.KLINE_INTERVAL_1DAY, start_str="2020-01-01", end_str="2023-12-31"), columns=columns)
                 klines["Open time"] = pd.to_datetime(klines["Open time"], unit="ms")
                 klines.set_index("Open time", inplace=True)
                 klines = klines[["Open", "High", "Low", "Close"]]

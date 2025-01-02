@@ -50,7 +50,7 @@ def OHLC_S_F(dataframe, col_open, col_high, col_low, col_close):
     ------------------------------
     '''
     
-    data_number = 90
+    data_number = 60
     data_pred = 30
     #------------#
     new_dataframe = dataframe.copy()
@@ -145,15 +145,15 @@ def OHLC_S_F(dataframe, col_open, col_high, col_low, col_close):
 
         for _ in range(len(list_index)):
             if (list_open[_] - list_close[_]) > 0:
-                ax1.bar(list_index[_], list_open[_] - list_close[_], width=1, linewidth=0.7, alpha=0.8, bottom=list_close[_], edgecolor=pal_black[0], color=pal_green[4])
+                ax1.bar(list_index[_], list_open[_] - list_close[_], width=0.7, linewidth=1.5, alpha=0.8, bottom=list_close[_], edgecolor=pal_green[4], color='None')
                 ax1.axvline(x=list_index[_], alpha=0.1, linewidth=7, color=pal_green[5])
-                plt.vlines(x=list_index[_], ymin=list_open[_], ymax=list_high[_], alpha=0.7, linestyles="dashed", colors="Snow")
-                plt.vlines(x=list_index[_], ymin=list_close[_], ymax=list_low[_], alpha=0.7, linestyles="dashed", colors="Snow")
+                plt.vlines(x=list_index[_], ymin=list_open[_], ymax=list_high[_], alpha=0.7, linestyles="dashed", colors=pal_green[4])
+                plt.vlines(x=list_index[_], ymin=list_close[_], ymax=list_low[_], alpha=0.7, linestyles="dashed", colors=pal_green[4])
             else:
-                ax1.bar(list_index[_], list_close[_] - list_open[_], width=1, linewidth=0.7, alpha=0.8, bottom=list_open[_], edgecolor=pal_black[0], color=pal_red[2])
+                ax1.bar(list_index[_], list_close[_] - list_open[_], width=0.7, linewidth=1.5, alpha=0.8, bottom=list_open[_], edgecolor=pal_red[2], color='None')
                 ax1.axvline(x=list_index[_], alpha=0.1, linewidth=7, color=pal_red[3])
-                plt.vlines(x=list_index[_], ymin=list_close[_], ymax=list_high[_], alpha=0.7, linestyles="dashed", colors="Snow")
-                plt.vlines(x=list_index[_], ymin=list_open[_], ymax=list_low[_], alpha=0.7, linestyles="dashed", colors="Snow")
+                plt.vlines(x=list_index[_], ymin=list_close[_], ymax=list_high[_], alpha=0.7, linestyles="dashed", colors=pal_red[2])
+                plt.vlines(x=list_index[_], ymin=list_open[_], ymax=list_low[_], alpha=0.7, linestyles="dashed", colors=pal_red[2])
                     
         # Update the last bar's color based on the checkbox state
         if len(List_MA) == 2:
@@ -206,16 +206,63 @@ def OHLC_S_F(dataframe, col_open, col_high, col_low, col_close):
         
             lr = LinearRegression()
             lr.fit(X_train,Y_train)
+            predict_model_train = lr.predict(X_train).tolist()
             predict_model = lr.predict(X_test).tolist()
+
+            Train_MSE = mean_squared_error(Y_train, predict_model_train)
+            Train_RMSE = round(math.sqrt(Train_MSE),3)
+            Test_MSE = mean_squared_error(Y_test, predict_model)
+            Test_RMSE = round(math.sqrt(Test_MSE),3)
             
+            Residuals_Train = Y_train - predict_model_train
+            Residuals_Test = Y_test - predict_model
+            Residuals_data_test = pd.DataFrame(data={'Residuals_Train' : Residuals_Train, 'Residuals_Test' : Residuals_Test})
+            residuals_index_test = pd.to_datetime(Residuals_data_test.index) #Residuals intex train
+
             for _ in range(len(predict_model)):
                 if (_ > 0) and (Y_test.iloc[_] > Y_test.iloc[_-1]) and (predict_model[_] >= Y_test.iloc[_]):
-                    ax[0].scatter(index[_], predict_model[_], s=abs(Y_test.iloc[_] - predict_model[_]), linewidth=1.5, label='Positive Forecast', edgecolor=pal_green[3], color=pal_green[1])
+                    ax1.scatter(index[_], predict_model[_], s=abs(Y_test.iloc[_] - predict_model[_]), linewidth=1.5, label='Positive Forecast', edgecolor=pal_green[3], color=pal_green[1])
                 elif (_ > 0) and (Y_test.iloc[_] < Y_test.iloc[_-1]) and (predict_model[_] <= Y_test.iloc[_]):
-                    ax[0].scatter(index[_], predict_model[_], s=abs(Y_test.iloc[_] - predict_model[_]), linewidth=1.5, label='Negative Forecast', edgecolor=pal_red[3], color=pal_red[1])
+                    ax1.scatter(index[_], predict_model[_], s=abs(Y_test.iloc[_] - predict_model[_]), linewidth=1.5, label='Negative Forecast', edgecolor=pal_red[3], color=pal_red[1])
                 else:
-                    ax[0].scatter(index[_], predict_model[_], s=abs(Y_test.iloc[_] - predict_model[_]), linewidth=0.3, label='False Forecast', edgecolor=pal_black[5], color=pal_black[1])
-            #ax1.legend(loc="upper right", fontsize=15) #Label - Size of plot
+                    ax1.scatter(index[_], predict_model[_], s=abs(Y_test.iloc[_] - predict_model[_]), linewidth=0.3, label='False Forecast', edgecolor=pal_black[5], color=pal_black[1])
+            
+            fig = gridspec.GridSpec(1, 2)
+            pl.figure(figsize=(17, 4), tight_layout=True)
+            
+            ax3 = pl.subplot(fig[0, 0])
+            bar1 = ax3.bar('Train RMSE', Train_RMSE, width=0.3, alpha=0.8, bottom=0, color=pal_blue[4])
+            bar2 = ax3.bar('Test RMSE', Test_RMSE, width=0.3, alpha=0.8, bottom=0, color=pal_red[3])
+            ax3.tick_params(axis='x', width=7, length=12, labelrotation=30, labelsize=15, bottom=True, direction="in", colors='White') #White
+            ax3.tick_params(axis='y', labelsize=0) #White
+            ax3.tick_params(axis='x', width=7, length=12, labelrotation=30, labelsize=15, bottom=True, direction="in", left=False, colors='White') #White
+            ax3.grid(axis='y', zorder=1, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
+            ax3.text(x='Train RMSE', y=Train_RMSE/2, s=Train_RMSE, color='White', weight='extra bold', ha='center', fontsize=15) #Text of labels
+            ax3.text(x='Test RMSE', y=Test_RMSE/2, s=Test_RMSE, color='White', weight='extra bold', ha='center', fontsize=15) #Text of labels
+            mplcp.add_bar_gradient(bars=bar1)
+            mplcp.add_bar_gradient(bars=bar2)
+            ax3.spines['top'].set_visible(False)
+            ax3.spines['right'].set_visible(False)
+            ax3.spines['left'].set_visible(False)
+            ax3.spines['bottom'].set_color('White')
+            ax3.spines['bottom'].set_linewidth(0.3)
+        
+            ax4 = pl.subplot(fig[0, 1])
+            #ax4.plot(residuals_index_test, Residuals_data_test.Residuals_Train.values, 'o', color=pal_blue[4])
+            #ax4.plot(residuals_index_test, Residuals_data_test.Residuals_Test.values, 'o', color=pal_red[3])
+            ax4.plot(residuals_index_test, Residuals_data_test.Residuals_Train.values, ls='--', label='Residuals Train', color=pal_blue[4])
+            ax4.plot(residuals_index_test, Residuals_data_test.Residuals_Test.values, ls='--', label='Residuals Test', color=pal_red[3])
+            ax4.legend()
+            #ax4.legend(['Residuals Train - Test'], loc="upper right", fontsize=15) #Label - Size of plot
+            ax4.tick_params(axis='x', labelrotation=30, labelsize=15, width=10, length=3, direction="in", colors='White') #Rotation label x and y
+            ax4.tick_params(axis='y', labelrotation=30, labelsize=15, colors='White') #Rotation label x and y
+            ax4.grid(zorder=1, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
+            mplcp.make_lines_glow()
+            ax4.spines['top'].set_visible(False)
+            ax4.spines['right'].set_visible(False)
+            ax4.spines['bottom'].set_visible(False)
+            ax4.spines['left'].set_color('White')
+            ax4.spines['left'].set_linewidth(0.3)
         
         ax1.spines['top'].set_visible(False)
         ax1.spines['right'].set_visible(False)
