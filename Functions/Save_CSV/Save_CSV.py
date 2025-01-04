@@ -13,7 +13,7 @@ import pandas as pd
 # ---
 # ### Function
 
-# In[2]:
+# In[1]:
 
 
 def Save_CSV_File(dataframe, name_of_csv):
@@ -25,7 +25,7 @@ def Save_CSV_File(dataframe, name_of_csv):
     ------------------------------
     '''
     
-    dataframe.to_csv('../Forecast_Prices/Data\Binance_Data_Crypto/'+name_of_csv+'.csv') 
+    dataframe.to_csv('../Forecast_Prices/Data/Binance_Data_Crypto/'+name_of_csv+'.csv') 
 
 
 # ---
