@@ -19,7 +19,7 @@ import pandas as pd
 # ### End Import Libraries
 # ---
 
-# In[1]:
+# In[2]:
 
 
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
@@ -98,7 +98,7 @@ def Drop_Big_NullSum_Columns(dataframe):
     null_value = new_dataframe.isnull().sum()
     percent = int((25/100) * len(new_dataframe))
 
-    print('--- Start Drop_Big_NullSum_Columns()\n.\n Drop > 12% null columns from length of dataframe\n.')
+    print('--- Start Drop_Big_NullSum_Columns()\n.\n Drop > 25% null columns from length of dataframe\n.')
     
     for _ in new_dataframe.columns:
         try:

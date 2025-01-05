@@ -32,10 +32,9 @@ from sklearn.metrics import mean_squared_error
 
 # * Forecast with Linear Regression
 
-# In[1]:
+# In[3]:
 
 
-# Define the OHLC function
 def OHLC_S_F(dataframe, col_open, col_high, col_low, col_close):
     '''
     This Function visualizes a plot of dataframe OPEN - HIGH - LOW - Close values.
@@ -231,16 +230,14 @@ def OHLC_S_F(dataframe, col_open, col_high, col_low, col_close):
             pl.figure(figsize=(17, 4), tight_layout=True)
             
             ax3 = pl.subplot(fig[0, 0])
-            bar1 = ax3.bar('Train RMSE', Train_RMSE, width=0.3, alpha=0.8, bottom=0, color=pal_blue[4])
-            bar2 = ax3.bar('Test RMSE', Test_RMSE, width=0.3, alpha=0.8, bottom=0, color=pal_red[3])
+            bar1 = ax3.bar('Train RMSE', Train_RMSE, width=1.3, linewidth=3.5, alpha=0.8, edgecolor=pal_green[4], color='None')
+            bar2 = ax3.bar('Test RMSE', Test_RMSE, width=1.3, linewidth=3.5, alpha=0.8, edgecolor=pal_red[2], color='None')
             ax3.tick_params(axis='x', width=7, length=12, labelrotation=30, labelsize=15, bottom=True, direction="in", colors='White') #White
             ax3.tick_params(axis='y', labelsize=0) #White
             ax3.tick_params(axis='x', width=7, length=12, labelrotation=30, labelsize=15, bottom=True, direction="in", left=False, colors='White') #White
             ax3.grid(axis='y', zorder=1, alpha=0.2, linestyle='--', linewidth=0.5, color='darkgrey') #Grid of plot
             ax3.text(x='Train RMSE', y=Train_RMSE/2, s=Train_RMSE, color='White', weight='extra bold', ha='center', fontsize=15) #Text of labels
             ax3.text(x='Test RMSE', y=Test_RMSE/2, s=Test_RMSE, color='White', weight='extra bold', ha='center', fontsize=15) #Text of labels
-            mplcp.add_bar_gradient(bars=bar1)
-            mplcp.add_bar_gradient(bars=bar2)
             ax3.spines['top'].set_visible(False)
             ax3.spines['right'].set_visible(False)
             ax3.spines['left'].set_visible(False)
@@ -250,8 +247,8 @@ def OHLC_S_F(dataframe, col_open, col_high, col_low, col_close):
             ax4 = pl.subplot(fig[0, 1])
             #ax4.plot(residuals_index_test, Residuals_data_test.Residuals_Train.values, 'o', color=pal_blue[4])
             #ax4.plot(residuals_index_test, Residuals_data_test.Residuals_Test.values, 'o', color=pal_red[3])
-            ax4.plot(residuals_index_test, Residuals_data_test.Residuals_Train.values, ls='--', label='Residuals Train', color=pal_blue[4])
-            ax4.plot(residuals_index_test, Residuals_data_test.Residuals_Test.values, ls='--', label='Residuals Test', color=pal_red[3])
+            ax4.plot(residuals_index_test, Residuals_data_test.Residuals_Train.values, alpha=0.8, ls='--', label='Residuals Train', color=pal_green[4])
+            ax4.plot(residuals_index_test, Residuals_data_test.Residuals_Test.values, alpha=0.8, ls='--', label='Residuals Test', color=pal_red[2])
             ax4.legend()
             #ax4.legend(['Residuals Train - Test'], loc="upper right", fontsize=15) #Label - Size of plot
             ax4.tick_params(axis='x', labelrotation=30, labelsize=15, width=10, length=3, direction="in", colors='White') #Rotation label x and y
