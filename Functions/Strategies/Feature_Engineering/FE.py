@@ -19,7 +19,7 @@ import numpy as np
 # * Rolling Standar Diviation
 # * Spread
 
-# In[3]:
+# In[1]:
 
 
 class Feature_Engineering:
@@ -146,6 +146,7 @@ class Feature_Engineering:
                     loss = (-delta.where(delta < 0, 0)).rolling(window=rsi_number).mean()
                     rs = gain / loss
                     self.data[column_name[_]+'_RSI_'+str(rsi_number)] = 100 - (100 / (1 + rs))
+                return self.data
             elif len(column_name) > 1 and (rsi_number > 0):
                 for _ in range(len(column_name)):
                     delta = self.data[column_name[_]].diff()
@@ -153,9 +154,7 @@ class Feature_Engineering:
                     loss = (-delta.where(delta < 0, 0)).rolling(window=rsi_number).mean()
                     rs = gain / loss
                     self.data[column_name[_]+'_RSI_'+str(rsi_number)] = 100 - (100 / (1 + rs))
-            else:
-                print('No option!\nError')
-            return self.data
+                return self.data
         except:
             print('No option!\nError')
 #-------------------------------------------------------------------------------------------------------------------------------

@@ -96,7 +96,7 @@ def Drop_Big_NullSum_Columns(dataframe):
     new_dataframe = dataframe.copy()
     
     null_value = new_dataframe.isnull().sum()
-    percent = int((12/100) * len(new_dataframe))
+    percent = int((25/100) * len(new_dataframe))
 
     print('--- Start Drop_Big_NullSum_Columns()\n.\n Drop > 12% null columns from length of dataframe\n.')
     
