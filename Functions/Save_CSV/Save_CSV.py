@@ -21,11 +21,11 @@ def Save_CSV_File(dataframe, name_of_csv):
     This function save a dataframe as csv file
     ------------------------------
     Parameter(dataframe): Name of dataframe
-    Parameter(name_of_csv): Name of csv file
+    Parameter(name_of_csv): Name of csv file (String)
     ------------------------------
     '''
     
-    dataframe.to_csv('../Forecast_Prices/Data/Binance_Data_Crypto/'+name_of_csv+'.csv') 
+    dataframe.to_csv('../Forecast_Prices/Data/'+name_of_csv+'.csv') 
 
 
 # ---

@@ -16,12 +16,20 @@ client = Client()
     
 import pandas as pd
 import datetime
+import datetime
 
 
 # In[5]:
 
 
 class Binance:
+    '''
+    The name class is Binance
+    Return all symbols (Get_All_Coins_Info)
+    Extract Data (Get_Historical_Data_1Day)
+    Re Extract Data (re_Get_Historical_Data_1Day)
+    '''
+    
     def Get_All_Coins_Info(self, countryCode): #Extract - Filter list Fiat of coin
         '''
         This function RETURN list with Cryptocurrency Simbols of Binance
@@ -100,8 +108,8 @@ class Binance:
         ------------------------------
         '''
     
-        old_dataframe_index = old_dataframe.index[-1].strftime('%Y-%m-%d')
-        today_date = datetime.datetime.now().strftime("%Y-%m-%d")
+        old_dataframe_index = str(old_dataframe.index[-1]) #.strftime('%Y-%m-%d')
+        today_date = str(datetime.datetime.now().strftime("%Y-%m-%d"))
 
         dataframe = pd.date_range(start=old_dataframe_index, end=today_date, freq="1D").to_frame()
         dataframe.index.name = 'Open time'
@@ -177,8 +185,8 @@ class Binance:
         ------------------------------
         '''
     
-        old_dataframe_index = old_dataframe.index[-1].strftime('%Y-%m-%d')
-        today_date = datetime.datetime.now().strftime("%Y-%m-%d")
+        old_dataframe_index = str(old_dataframe.index[-1]).strftime('%Y-%m-%d')
+        today_date = str(datetime.datetime.now().strftime("%Y-%m-%d"))
 
         dataframe = pd.date_range(start=old_dataframe_index, end=today_date, freq="1D").to_frame()
         dataframe.index.name = 'Open time'
