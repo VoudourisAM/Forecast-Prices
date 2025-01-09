@@ -19,7 +19,7 @@ import pandas as pd
 # ### End Import Libraries
 # ---
 
-# In[2]:
+# In[6]:
 
 
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
@@ -37,7 +37,7 @@ def Correlation(dataframe, column_target, number):
     Target_Correlation = pd.DataFrame(data=dataframe.corr()[column_target]).copy()
 
     try:
-        print('--- Start Correlation()\n.\n.')
+        print('--- Start Correlation()\n.')
         
         for _ in range(len(Target_Correlation)):
             #print(_, ': ', Target_Correlation.index[_], ' --- ', Target_Correlation.iloc[_,0])
@@ -45,8 +45,8 @@ def Correlation(dataframe, column_target, number):
                 #print(_, ': ', Target_Correlation.index[_], ' --- ', Target_Correlation.iloc[_,0])
                 correlation.append(Target_Correlation.index[_])
         
-        print('Correlation between: ', '(', -number, ' - ', number, ')\nLength of Dataframe is: ', len(correlation))
-        print('--- End Correlation()')
+        print('Name of Target is: ', column_target, '\nCorrelation between: ', '(', -number, ' - ', number, ')', '\nLength of Dataframe is: ', len(correlation))
+        print('.\n--- End Correlation()\n')
         #return correlation
         return dataframe[correlation]
     
@@ -81,9 +81,9 @@ def Select_Target(dataframe, column_name):
     except:
         print('No option!\nError')
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
-        
-        
-                
+
+
+
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
 def Drop_Big_NullSum_Columns(dataframe):
     '''

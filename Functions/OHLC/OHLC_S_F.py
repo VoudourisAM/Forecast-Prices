@@ -53,6 +53,7 @@ def OHLC_S_F(dataframe, col_open, col_high, col_low, col_close):
     data_pred = 30
     #------------#
     new_dataframe = dataframe.copy()
+    new_dataframe = new_dataframe.dropna()
     list_index = new_dataframe[-data_number:].index
     list_index = pd.to_datetime(list_index)
 
@@ -309,6 +310,7 @@ def OHLC_S_F_2(dataframe, col_open, col_high, col_low, col_close):
     data_pred = 30
     #------------#
     new_dataframe = dataframe.copy()
+    new_dataframe = new_dataframe.dropna()
     list_index = new_dataframe[-data_number:].index
     list_index = pd.to_datetime(list_index)
 
@@ -527,7 +529,7 @@ def OHLC_S_F_2(dataframe, col_open, col_high, col_low, col_close):
     plot_ohlc()
 
 
-# In[6]:
+# In[1]:
 
 
 # Define the OHLC function
@@ -552,6 +554,7 @@ def OHLC_S_F__(dataframe, col_open, col_high, col_low, col_close):
     data_pred = 30
     #------------#
     new_dataframe = dataframe.copy()
+    new_dataframe = new_dataframe.dropna()
     list_index = new_dataframe[-data_number:].index
     list_index = pd.to_datetime(list_index)
 

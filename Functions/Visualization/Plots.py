@@ -29,7 +29,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error  
 
 
-# In[2]:
+# In[1]:
 
 
 #-------------------------------------------------- PLOTS ---------------------------------------------------------------------#
@@ -40,6 +40,8 @@ def Plot_Of_Matrix_Correlation(dataframe):
     Parameter(dataframe): DataFrame
     ------------------------------
     '''
+    
+    dataframe = dataframe.dropna()
     
     plt.style.use("cyberpunk") #Background color
     fig, ax = plt.subplots(1, 2, figsize=(18, 9), tight_layout=True)
@@ -76,6 +78,8 @@ def Plot_Of_Line(dataframe, column_name):
     ------------------------------
     '''
     
+    dataframe = dataframe.dropna()
+
     pal_dark = sns.color_palette("Greys")
     data = dataframe.copy()
     data.index = pd.to_datetime(data.index)
@@ -127,6 +131,7 @@ def Plot_Train_Test_Split(dataframe):
         ------------------------------
         '''
         
+        dataframe = dataframe.dropna()
         X = dataframe.iloc[:, 1:]
         y = dataframe.iloc[:, 0]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)  # 80% X_train - 20% X_test
@@ -254,6 +259,8 @@ def Plot_Train_Test_Splits(dataframe):
         Parameter(dataframe): DataFrame
         ------------------------------
         '''
+        
+        dataframe = dataframe.dropna()
         X = dataframe.iloc[:, 1:]
         y = dataframe.iloc[:, 0]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)  # 80% X_train - 20% X_test
@@ -419,6 +426,7 @@ def Recursive_Forecast_Plot_Split(dataframe, model):
     try:
         prediction = [] #Create a list value
     
+        dataframe = dataframe.dropna()
         X = dataframe.iloc[:, 1:]
         y = dataframe.iloc[:, 0]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False) #80% X_train - 20% X_test
@@ -625,7 +633,10 @@ def Plot_Percentage(dataframe, column_name_1, column_name_2):
     Parameter(column_name_2): Column Name (string)
     ------------------------------
     '''
+    
     try:
+        dataframe = dataframe.dropna()
+
         pal_red = sns.color_palette("flare") #Color
         pal_blue = sns.color_palette("Blues") #Color
 
@@ -749,7 +760,8 @@ def Recursive_Forecast_Train_Test_Plot_Split(dataframe, model):
     
     try:
         prediction = [] #Create a list value
-    
+        
+        dataframe = dataframe.dropna()
         X = dataframe.iloc[:, 1:]
         y = dataframe.iloc[:, 0]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False) #80% X_train - 20% X_test
