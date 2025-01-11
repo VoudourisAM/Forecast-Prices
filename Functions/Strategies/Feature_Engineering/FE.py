@@ -19,7 +19,7 @@ import numpy as np
 # * Rolling Standar Diviation
 # * Spread
 
-# In[2]:
+# In[3]:
 
 
 class Feature_Engineering:
@@ -105,7 +105,7 @@ class Feature_Engineering:
         
             # Iterate through columns and calculate moving averages
             for col in self.data.columns:
-                if '_FMA_' not in col and '_SMA_' not in col and '_FEMA_' not in col and '_SEMA_' not in col and '_RSD_' not in col and '_RSI_' not in col:
+                if 'Target_' not in col and '_FMA_' not in col and '_SMA_' not in col and '_FEMA_' not in col and '_SEMA_' not in col and '_RSD_' not in col and '_RSI_' not in col:
                     if ma_number <= 20:
                         new_col_name = f"{col}_FMA_{ma_number}"
                         new_columns[new_col_name] = self.data[col].rolling(window=ma_number).mean()
@@ -167,7 +167,7 @@ class Feature_Engineering:
         
             # Iterate over the DataFrame columns
             for col in self.data.columns:
-                if not any(keyword in col for keyword in ['_FMA_', '_SMA_', '_FEMA_', '_SEMA_', '_RSD_', '_RSI_']):
+                if not any(keyword in col for keyword in ['Target_', '_FMA_', '_SMA_', '_FEMA_', '_SEMA_', '_RSD_', '_RSI_']):
                     if ema_number <= 20:
                         new_col_name = f"{col}_FEMA_{ema_number}"
                     else:

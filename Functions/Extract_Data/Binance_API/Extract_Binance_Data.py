@@ -18,7 +18,7 @@ import pandas as pd
 import datetime
 
 
-# In[5]:
+# In[2]:
 
 
 class Binance:
@@ -49,7 +49,7 @@ class Binance:
                 if info_df['quoteAsset'][_] == countryCode:
                     #print(_, ': ', info_df['symbol'][_], ': ', info_df['quoteAsset'][_])
                     info_coins.append(info_df['symbol'][_])
-            print('Symbols: ', '(', countryCode, ')\n') 
+            print('Symbols: ', '(', countryCode, ')\n.') 
             print('--- End Get_All_Coins_Info From Binance\n')
             return info_coins
         except:
@@ -108,8 +108,8 @@ class Binance:
         ------------------------------
         '''
     
-        old_dataframe_index = str(old_dataframe.index[-1]) #.strftime('%Y-%m-%d')
-        today_date = str(datetime.datetime.now().strftime("%Y-%m-%d"))
+        old_dataframe_index = str(old_dataframe.index[-1]) #.strftime("%Y-%m-%d")
+        today_date = datetime.datetime.now().strftime("%Y-%m-%d")
 
         dataframe = pd.date_range(start=old_dataframe_index, end=today_date, freq="1D").to_frame()
         dataframe.index.name = 'Open time'
@@ -129,8 +129,9 @@ class Binance:
                 for j in range(len(klines.columns)): #Rename the columns
                     klines.rename(columns={klines.columns[j] : list_of_data[i]+'_'+klines.columns[j]}, inplace=True) 
                 dataframe = dataframe.join(klines, how="left")
+
             dataframe.drop(index=[dataframe.index[0]], inplace=True)
-            dataframe = pd.concat([old_dataframe,dataframe], axis=0)
+            #dataframe = pd.concat([old_dataframe, dataframe], axis=0)
             print('--- End Re-Extract Data From Binance\n')
             
             return dataframe
@@ -148,7 +149,7 @@ class Binance:
         ------------------------------
         '''
         try:
-            print('--- Start Select_Target()\n.\nTarget: ',column_name, '\n.')
+            print('--- Start Select_Target (Binance)\n.\nTarget: ',column_name, '\n.')
         
             new_dataframe = dataframe.copy()
             new_dataframe['Date'] = new_dataframe.index
@@ -157,8 +158,8 @@ class Binance:
             new_dataframe.drop(['Date'], axis=1, inplace=True)
             new_dataframe.insert(0, 'Target_'+column_name, new_dataframe[column_name].shift(-1))
             new_dataframe.dropna(axis=0, inplace=True)
-    
-            print('--- End Select_Target()\n')
+            print('--- End Select_Target (Binance)\n')
+
             return new_dataframe
         except:
             print('No option!\nError')
