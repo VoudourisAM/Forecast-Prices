@@ -19,7 +19,7 @@ import pandas as pd
 # ### End Import Libraries
 # ---
 
-# In[6]:
+# In[1]:
 
 
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
@@ -57,34 +57,6 @@ def Correlation(dataframe, column_target, number):
 
 
 #-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
-def Select_Target(dataframe, column_name):
-    '''
-    This function RETURN a dataframe with Target
-    ------------------------------
-    Parameter(dataframe): DataFrame
-    Parameter(column_name): Column Name
-    ------------------------------
-    '''
-    try:
-        print('--- Start Select_Target()\n.\nTarget: ',column_name, '\n.')
-        
-        new_dataframe = dataframe.copy()
-        new_dataframe['Date'] = new_dataframe.index
-        new_dataframe['Date'] = new_dataframe['Date'].shift(-1)
-        new_dataframe.index = new_dataframe['Date']
-        new_dataframe.drop(['Date'], axis=1, inplace=True)
-        new_dataframe.insert(0, 'Target_'+column_name, new_dataframe[column_name].shift(-1))
-        new_dataframe.dropna(axis=0, inplace=True)
-    
-        print('--- End Select_Target()\n')
-        return new_dataframe
-    except:
-        print('No option!\nError')
-#-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
-
-
-
-#-------------------------------------------------- PREPERATION ---------------------------------------------------------------#
 def Drop_Big_NullSum_Columns(dataframe):
     '''
     This Function Return a dataframe, Drop columns with Big-Null Values
@@ -96,9 +68,9 @@ def Drop_Big_NullSum_Columns(dataframe):
     new_dataframe = dataframe.copy()
     
     null_value = new_dataframe.isnull().sum()
-    percent = int((25/100) * len(new_dataframe))
+    percent = int((12/100) * len(new_dataframe))
 
-    print('--- Start Drop_Big_NullSum_Columns()\n.\n Drop > 25% null columns from length of dataframe\n.')
+    print('--- Start Drop_Big_NullSum_Columns()\n.\n Drop > 12% null columns from length of dataframe\n.')
     
     for _ in new_dataframe.columns:
         try:
